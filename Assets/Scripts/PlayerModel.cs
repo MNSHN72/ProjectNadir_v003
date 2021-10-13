@@ -22,6 +22,7 @@ namespace ProjectNadir
         {
             ProccessLookDirection();
             gameObject.transform.rotation = Quaternion.LookRotation(-_lookDirection, Vector3.up);
+
             _animator.SetBool("IsWalking", playerMovement.IsWalking);
             _animator.SetFloat("Speed", Mathf.Abs(playerMovement.Velocity.x));
         }

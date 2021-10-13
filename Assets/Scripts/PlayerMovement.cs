@@ -119,7 +119,6 @@ namespace ProjectNadir
             {
                 _isWalking = false;
             }
-
         }
 
 
