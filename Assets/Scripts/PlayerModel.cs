@@ -28,15 +28,11 @@ namespace ProjectNadir
         }
         private void ProccessLookDirection()
         {
-            if (playerMovement.inputDirection != 0f && Mathf.Abs(playerMovement.inputDirection) > 0.2f)
+            if (playerMovement.inputDirection != Vector2.zero)
             {
-                _lookDirection.x = playerMovement.inputDirection;
+                _lookDirection.x = playerMovement.inputDirection.x;
+                _lookDirection.z = playerMovement.inputDirection.y;
             }
-            else
-            {
-                _lookDirection.x = playerMovement.neutralDirection;
-            }
-            ProccessOffset();
         }
         private void ProccessOffset()
         {

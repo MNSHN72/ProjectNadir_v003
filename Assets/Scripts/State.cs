@@ -50,7 +50,8 @@ namespace ProjectNadir
         #region Methods
         protected void UpdateMovedirection(float Speed)
         {
-            playerMovement.moveDirection.x = Speed * Time.fixedDeltaTime * playerMovement.inputDirection;
+            playerMovement.moveDirection.x = Speed * Time.fixedDeltaTime * playerMovement.inputDirection.x;
+            playerMovement.moveDirection.z = Speed * Time.fixedDeltaTime * playerMovement.inputDirection.y;
         }
         protected void ApplyJumpForce(float inFloat)
         {

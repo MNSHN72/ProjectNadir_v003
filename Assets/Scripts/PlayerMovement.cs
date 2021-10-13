@@ -27,7 +27,7 @@ namespace ProjectNadir
         private PlayerInput _playerInput;
         private CharacterController _characterController;
 
-        public float inputDirection = 0f;
+        public Vector2 inputDirection =  Vector2.zero;
         public Vector3 moveDirection = Vector3.zero;
         public float neutralDirection = 1f;
 
@@ -128,7 +128,7 @@ namespace ProjectNadir
         #region input handlers
         private void MoveHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            inputDirection = context.ReadValue<Vector2>().x;
+            inputDirection = context.ReadValue<Vector2>();
 
             StartCoroutine(_currentState.Walk());
         }
@@ -145,18 +145,18 @@ namespace ProjectNadir
         #region private methods
         private void ProccessNeutralDirection() 
         {
-            if (inputDirection != 0 )
-            {
-                if (inputDirection>0)
-                {
-                    neutralDirection = 1f;
-                }
-                else if (inputDirection < 0)
-                {
-                    neutralDirection = -1f;
-                }
-                return;
-            }
+            //if (inputDirection != 0 )
+            //{
+            //    if (inputDirection>0)
+            //    {
+            //        neutralDirection = 1f;
+            //    }
+            //    else if (inputDirection < 0)
+            //    {
+            //        neutralDirection = -1f;
+            //    }
+            //    return;
+            //}
         }
 
         #endregion
