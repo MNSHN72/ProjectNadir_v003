@@ -29,7 +29,7 @@ namespace ProjectNadir
 
         public Vector2 inputDirection =  Vector2.zero;
         public Vector3 moveDirection = Vector3.zero;
-        public float neutralDirection = 1f;
+        public Vector3 neutralDirection = Vector3.zero;
 
         #endregion
 
@@ -145,18 +145,11 @@ namespace ProjectNadir
         #region private methods
         private void ProccessNeutralDirection() 
         {
-            //if (inputDirection != 0 )
-            //{
-            //    if (inputDirection>0)
-            //    {
-            //        neutralDirection = 1f;
-            //    }
-            //    else if (inputDirection < 0)
-            //    {
-            //        neutralDirection = -1f;
-            //    }
-            //    return;
-            //}
+            if (inputDirection != Vector2.zero)
+            {
+                    neutralDirection.x = inputDirection.x;
+                    neutralDirection.z = inputDirection.y; 
+            }
         }
 
         #endregion

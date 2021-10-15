@@ -63,7 +63,7 @@ namespace ProjectNadir
             {
                 playerMovement.moveDirection.y = 0f; 
             }
-            playerMovement.moveDirection.x = playerMovement.DashSpeed * Time.fixedDeltaTime * playerMovement.neutralDirection;
+            playerMovement.moveDirection = playerMovement.DashSpeed * Time.fixedDeltaTime * Vector3.Normalize(playerMovement.neutralDirection);
         }
         protected void YepGravity() 
         {
