@@ -298,7 +298,7 @@ namespace ProjectNadir
         {
             if (playerMovement.IsGrounded)
             {
-                ApplyJumpForce(playerMovement.JumpHeight*1.1f);
+                ApplyJumpForce(playerMovement.JumpHeight*playerMovement.DashJumpSpeedModifier);
                 playerMovement.SetState(new DashJumping(playerMovement)); 
             }
             else if (playerMovement.DoubleJumpPossible)
