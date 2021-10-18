@@ -107,10 +107,16 @@ namespace ProjectNadir
 
             _currentState.ApplyGravity();
             _currentState.StateManager();
+
             ProccessNeutralDirection();
+            ProccessAnimationParameters();
 
             _characterController.Move(moveDirection);
 
+        }
+
+        private void ProccessAnimationParameters()
+        {
             if (_isGrounded && _characterController.velocity != Vector3.zero)
             {
                 _isWalking = true;
@@ -120,9 +126,6 @@ namespace ProjectNadir
                 _isWalking = false;
             }
         }
-
-
-
         #endregion
 
         #region input handlers
@@ -148,7 +151,7 @@ namespace ProjectNadir
             if (inputDirection != Vector2.zero)
             {
                     neutralDirection.x = inputDirection.x;
-                    neutralDirection.z = inputDirection.y; 
+                    neutralDirection.z = inputDirection.y;
             }
         }
 

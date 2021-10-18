@@ -61,9 +61,11 @@ namespace ProjectNadir
         {
             if (playerMovement.IsGrounded == false)
             {
-                playerMovement.moveDirection.y = 0f; 
+                playerMovement.moveDirection.y = 0f;
             }
-            playerMovement.moveDirection = playerMovement.DashSpeed * Time.fixedDeltaTime * Vector3.Normalize(playerMovement.neutralDirection);
+            playerMovement.moveDirection.x = playerMovement.DashSpeed * Time.fixedDeltaTime * Vector3.Normalize(playerMovement.neutralDirection).x;
+            playerMovement.moveDirection.z = playerMovement.DashSpeed * Time.fixedDeltaTime * Vector3.Normalize(playerMovement.neutralDirection).z;
+
         }
         protected void YepGravity() 
         {

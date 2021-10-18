@@ -245,7 +245,7 @@ MonoBehaviour:
   _dashJumpSpeedModifier: 0.6
   inputDirection: {x: 0, y: 0}
   moveDirection: {x: 0, y: 0, z: 0}
-  neutralDirection: 1
+  neutralDirection: {x: 0, y: 0, z: 0}
 --- !u!136 &6800065440213911675
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -716,32 +716,32 @@ PrefabInstance:
     - target: {fileID: -9132900131629795433, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Center.x
-      value: -0.00019884523
+      value: -0.000000110827386
       objectReference: {fileID: 0}
     - target: {fileID: -9132900131629795433, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Center.y
-      value: 0.00051730336
+      value: -0.0041198377
       objectReference: {fileID: 0}
     - target: {fileID: -9132900131629795433, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Center.z
-      value: 0.0075943735
+      value: 0.01357857
       objectReference: {fileID: 0}
     - target: {fileID: -9132900131629795433, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Extent.x
-      value: 0.0018491896
+      value: 0.003005864
       objectReference: {fileID: 0}
     - target: {fileID: -9132900131629795433, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Extent.y
-      value: 0.0027915975
+      value: 0.008926636
       objectReference: {fileID: 0}
     - target: {fileID: -9132900131629795433, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Extent.z
-      value: 0.006414112
+      value: 0.00042991526
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
@@ -816,32 +816,32 @@ PrefabInstance:
     - target: {fileID: -2610096740762865246, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Center.x
-      value: -0.0000052126125
+      value: 0.000000047672074
       objectReference: {fileID: 0}
     - target: {fileID: -2610096740762865246, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Center.y
-      value: 0.0031707755
+      value: 0.010679923
       objectReference: {fileID: 0}
     - target: {fileID: -2610096740762865246, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Center.z
-      value: 0.008870689
+      value: 0.016336188
       objectReference: {fileID: 0}
     - target: {fileID: -2610096740762865246, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Extent.x
-      value: 0.0008045885
+      value: 0.0008022942
       objectReference: {fileID: 0}
     - target: {fileID: -2610096740762865246, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Extent.y
-      value: 0.00007005758
+      value: 0.00747592
       objectReference: {fileID: 0}
     - target: {fileID: -2610096740762865246, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
       propertyPath: m_AABB.m_Extent.z
-      value: 0.007482253
+      value: 0.000016754493
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6286904fbb4d4bf4d9fb60520b0865fc,
         type: 3}
