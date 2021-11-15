@@ -43,6 +43,14 @@ namespace ProjectNadir
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Melee"",
+                    ""type"": ""Button"",
+                    ""id"": ""2ccea5b6-0fcd-42a7-b5e9-3f438c7d7704"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -78,6 +86,17 @@ namespace ProjectNadir
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4d237f7e-d1cf-411b-a114-8f43094ec35c"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Melee"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -89,6 +108,7 @@ namespace ProjectNadir
             m_PlayerMovement_Move = m_PlayerMovement.FindAction("Move", throwIfNotFound: true);
             m_PlayerMovement_Jump = m_PlayerMovement.FindAction("Jump", throwIfNotFound: true);
             m_PlayerMovement_Dash = m_PlayerMovement.FindAction("Dash", throwIfNotFound: true);
+            m_PlayerMovement_Melee = m_PlayerMovement.FindAction("Melee", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -141,6 +161,7 @@ namespace ProjectNadir
         private readonly InputAction m_PlayerMovement_Move;
         private readonly InputAction m_PlayerMovement_Jump;
         private readonly InputAction m_PlayerMovement_Dash;
+        private readonly InputAction m_PlayerMovement_Melee;
         public struct PlayerMovementActions
         {
             private @PlayerInput m_Wrapper;
@@ -148,6 +169,7 @@ namespace ProjectNadir
             public InputAction @Move => m_Wrapper.m_PlayerMovement_Move;
             public InputAction @Jump => m_Wrapper.m_PlayerMovement_Jump;
             public InputAction @Dash => m_Wrapper.m_PlayerMovement_Dash;
+            public InputAction @Melee => m_Wrapper.m_PlayerMovement_Melee;
             public InputActionMap Get() { return m_Wrapper.m_PlayerMovement; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -166,6 +188,9 @@ namespace ProjectNadir
                     @Dash.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnDash;
                     @Dash.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnDash;
                     @Dash.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnDash;
+                    @Melee.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnMelee;
+                    @Melee.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnMelee;
+                    @Melee.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnMelee;
                 }
                 m_Wrapper.m_PlayerMovementActionsCallbackInterface = instance;
                 if (instance != null)
@@ -179,6 +204,9 @@ namespace ProjectNadir
                     @Dash.started += instance.OnDash;
                     @Dash.performed += instance.OnDash;
                     @Dash.canceled += instance.OnDash;
+                    @Melee.started += instance.OnMelee;
+                    @Melee.performed += instance.OnMelee;
+                    @Melee.canceled += instance.OnMelee;
                 }
             }
         }
@@ -188,6 +216,7 @@ namespace ProjectNadir
             void OnMove(InputAction.CallbackContext context);
             void OnJump(InputAction.CallbackContext context);
             void OnDash(InputAction.CallbackContext context);
+            void OnMelee(InputAction.CallbackContext context);
         }
     }
 }
