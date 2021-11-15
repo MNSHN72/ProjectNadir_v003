@@ -27,7 +27,7 @@ namespace ProjectNadir
         private PlayerInput _playerInput;
         private CharacterController _characterController;
 
-        public Vector2 inputDirection =  Vector2.zero;
+        public Vector2 inputDirection = Vector2.zero;
         public Vector3 moveDirection = Vector3.zero;
         public Vector3 neutralDirection = Vector3.zero;
 
@@ -78,6 +78,8 @@ namespace ProjectNadir
             _playerInput.PlayerMovement.Jump.started += JumpHandler;
 
             _playerInput.PlayerMovement.Dash.started += DashHandler;
+
+            _playerInput.PlayerMovement.Melee.started += MeleeHandler;
 
 
             _playerInput.PlayerMovement.Enable();
@@ -139,19 +141,23 @@ namespace ProjectNadir
         {
             StartCoroutine(_currentState.Jump());
         }
-        private void DashHandler(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+        private void DashHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
             StartCoroutine(_currentState.Dash());
+        }
+        private void MeleeHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        {
+            StartCoroutine(_currentState.Melee());
         }
         #endregion
 
         #region private methods
-        private void ProccessNeutralDirection() 
+        private void ProccessNeutralDirection()
         {
             if (inputDirection != Vector2.zero)
             {
-                    neutralDirection.x = inputDirection.x;
-                    neutralDirection.z = inputDirection.y;
+                neutralDirection.x = inputDirection.x;
+                neutralDirection.z = inputDirection.y;
             }
         }
 
@@ -192,6 +198,11 @@ namespace ProjectNadir
             StartDash();
             playerMovement.SetState(new Dashing(playerMovement));
 
+            yield return new WaitForEndOfFrame();
+        }
+        public override IEnumerator Melee()
+        {
+            playerMovement.SetState(new Attack001(playerMovement));
             yield return new WaitForEndOfFrame();
         }
 
@@ -301,8 +312,8 @@ namespace ProjectNadir
         {
             if (playerMovement.IsGrounded)
             {
-                ApplyJumpForce(playerMovement.JumpHeight*playerMovement.DashJumpSpeedModifier);
-                playerMovement.SetState(new DashJumping(playerMovement)); 
+                ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DashJumpSpeedModifier);
+                playerMovement.SetState(new DashJumping(playerMovement));
             }
             else if (playerMovement.DoubleJumpPossible)
             {
@@ -320,7 +331,7 @@ namespace ProjectNadir
             {
                 if (playerMovement.IsGrounded)
                 {
-                    playerMovement.SetState(new Standard(playerMovement)); 
+                    playerMovement.SetState(new Standard(playerMovement));
                 }
                 else if (playerMovement.IsGrounded == false)
                 {
@@ -332,7 +343,7 @@ namespace ProjectNadir
 
         public Dashing(PlayerMovement playerMovement) : base(playerMovement) { }
     }
-    public class DashJumping : State 
+    public class DashJumping : State
     {
         private float _currentJumpTime = 0f;
         public override IEnumerator Start()
@@ -371,6 +382,15 @@ namespace ProjectNadir
             YepGravity();
         }
         public DashJumping(PlayerMovement playerMovement) : base(playerMovement) { }
+    }
+
+    public class Attack001 : State
+    {
+        public override void ApplyGravity()
+        {
+            YepGravity();
+        }
+        public Attack001(PlayerMovement playerMovement) : base(playerMovement) { }
     }
     #endregion
 }

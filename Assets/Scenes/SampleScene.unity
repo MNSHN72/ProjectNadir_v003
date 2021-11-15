@@ -9625,6 +9625,21 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: 1.4
       objectReference: {fileID: 0}
+    - target: {fileID: 5180710181363487705, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 7d2c2af6867089b40ad33f1a57e37dcb, type: 2}
+    - target: {fileID: 5180710181363487705, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5663294337737756440, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6481035198653366813, guid: 2dc357dad1583004db9b8ab8bbf573ba,
         type: 3}
       propertyPath: m_Controller

@@ -34,6 +34,10 @@ namespace ProjectNadir
         {
             yield break;
         }
+        public virtual IEnumerator Melee() 
+        {
+            yield break;
+        }
 
 
         public virtual void StateManager()

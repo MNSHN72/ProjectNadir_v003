@@ -8,7 +8,6 @@ namespace ProjectNadir
     public class PlayerModel : MonoBehaviour
     {
         [SerializeField] private PlayerMovement playerMovement;
-        [SerializeField] private float _lookOffset = 1f;
         private Vector3 _lookDirection = Vector3.zero;
 
         private Animator _animator;
@@ -32,17 +31,6 @@ namespace ProjectNadir
             {
                 _lookDirection.x = playerMovement.inputDirection.x;
                 _lookDirection.z = playerMovement.inputDirection.y;
-            }
-        }
-        private void ProccessOffset()
-        {
-            if (_lookDirection.x > 0)
-            {
-                _lookDirection.z = -_lookDirection.x * _lookOffset;
-            }
-            else if (_lookDirection.x < 0)
-            {
-                _lookDirection.z = _lookDirection.x * _lookOffset;
             }
         }
     }
