@@ -30,7 +30,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Melee",
+                    "name": "Attack",
                     "type": "Button",
                     "id": "2ccea5b6-0fcd-42a7-b5e9-3f438c7d7704",
                     "expectedControlType": "Button",
@@ -79,7 +79,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Melee",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

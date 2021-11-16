@@ -9,7 +9,6 @@ namespace ProjectNadir
     public class infoUI : MonoBehaviour
     {
         [SerializeField] private PlayerMovement playerMovement;
-        [SerializeField] private PlayerModel playerModel;
         private TMP_Text text;
         private string _textToPrint;
 

@@ -34,7 +34,7 @@ namespace ProjectNadir
         {
             yield break;
         }
-        public virtual IEnumerator Melee() 
+        public virtual IEnumerator Attack() 
         {
             yield break;
         }

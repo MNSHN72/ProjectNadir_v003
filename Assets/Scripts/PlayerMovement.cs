@@ -8,6 +8,7 @@ namespace ProjectNadir
     public class PlayerMovement : StateMachine
     {
         #region poperties, fields, etc
+        [SerializeField] private Transform _playerModel;
         [SerializeField] private float _walkSpeed = 15f;
         [SerializeField] private float _dashSpeed = 50f;
         [SerializeField] private float _jumpHeight = 1f;
@@ -20,16 +21,21 @@ namespace ProjectNadir
         private bool _doubleJumpPossible;
         private bool _airDashPossible;
 
-        //animator bools
+        //animator parameters
         private bool _isWalking = false;
 
 
+        private Animator _animator;
         private PlayerInput _playerInput;
         private CharacterController _characterController;
 
+        //need to be public cuz the state class needs to access them
         public Vector2 inputDirection = Vector2.zero;
         public Vector3 moveDirection = Vector3.zero;
         public Vector3 neutralDirection = Vector3.zero;
+
+        //private
+        private Vector3 _lookDirection = Vector3.zero;
 
         #endregion
 
@@ -79,7 +85,7 @@ namespace ProjectNadir
 
             _playerInput.PlayerMovement.Dash.started += DashHandler;
 
-            _playerInput.PlayerMovement.Melee.started += MeleeHandler;
+            _playerInput.PlayerMovement.Attack.started += AttackHandler;
 
 
             _playerInput.PlayerMovement.Enable();
@@ -101,10 +107,14 @@ namespace ProjectNadir
 
         private void Start()
         {
+            _animator = GetComponentInChildren<Animator>();
             SetState(new Standard(this));
         }
         private void FixedUpdate()
         {
+            ProccessLookDirection();
+            _playerModel.rotation = Quaternion.LookRotation(-_lookDirection, Vector3.up);
+
             _isGrounded = _characterController.isGrounded;
 
             _currentState.ApplyGravity();
@@ -113,21 +123,14 @@ namespace ProjectNadir
             ProccessNeutralDirection();
             ProccessAnimationParameters();
 
+            _animator.SetBool("IsWalking", IsWalking);
+            _animator.SetFloat("Speed", Mathf.Abs(Velocity.x));
+
             _characterController.Move(moveDirection);
 
         }
 
-        private void ProccessAnimationParameters()
-        {
-            if (_isGrounded && _characterController.velocity != Vector3.zero)
-            {
-                _isWalking = true;
-            }
-            else
-            {
-                _isWalking = false;
-            }
-        }
+
         #endregion
 
         #region input handlers
@@ -145,9 +148,9 @@ namespace ProjectNadir
         {
             StartCoroutine(_currentState.Dash());
         }
-        private void MeleeHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        private void AttackHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            StartCoroutine(_currentState.Melee());
+            StartCoroutine(_currentState.Attack());
         }
         #endregion
 
@@ -160,7 +163,25 @@ namespace ProjectNadir
                 neutralDirection.z = inputDirection.y;
             }
         }
-
+        private void ProccessAnimationParameters()
+        {
+            if (_isGrounded && _characterController.velocity != Vector3.zero)
+            {
+                _isWalking = true;
+            }
+            else
+            {
+                _isWalking = false;
+            }
+        }
+        private void ProccessLookDirection()
+        {
+            if (inputDirection != Vector2.zero)
+            {
+                _lookDirection.x = inputDirection.x;
+                _lookDirection.z = inputDirection.y;
+            }
+        }
         #endregion
     }
 
@@ -200,8 +221,9 @@ namespace ProjectNadir
 
             yield return new WaitForEndOfFrame();
         }
-        public override IEnumerator Melee()
+        public override IEnumerator Attack()
         {
+
             playerMovement.SetState(new Attack001(playerMovement));
             yield return new WaitForEndOfFrame();
         }

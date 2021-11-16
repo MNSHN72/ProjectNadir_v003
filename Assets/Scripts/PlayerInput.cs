@@ -45,7 +45,7 @@ namespace ProjectNadir
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Melee"",
+                    ""name"": ""Attack"",
                     ""type"": ""Button"",
                     ""id"": ""2ccea5b6-0fcd-42a7-b5e9-3f438c7d7704"",
                     ""expectedControlType"": ""Button"",
@@ -94,7 +94,7 @@ namespace ProjectNadir
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Melee"",
+                    ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -108,7 +108,7 @@ namespace ProjectNadir
             m_PlayerMovement_Move = m_PlayerMovement.FindAction("Move", throwIfNotFound: true);
             m_PlayerMovement_Jump = m_PlayerMovement.FindAction("Jump", throwIfNotFound: true);
             m_PlayerMovement_Dash = m_PlayerMovement.FindAction("Dash", throwIfNotFound: true);
-            m_PlayerMovement_Melee = m_PlayerMovement.FindAction("Melee", throwIfNotFound: true);
+            m_PlayerMovement_Attack = m_PlayerMovement.FindAction("Attack", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -161,7 +161,7 @@ namespace ProjectNadir
         private readonly InputAction m_PlayerMovement_Move;
         private readonly InputAction m_PlayerMovement_Jump;
         private readonly InputAction m_PlayerMovement_Dash;
-        private readonly InputAction m_PlayerMovement_Melee;
+        private readonly InputAction m_PlayerMovement_Attack;
         public struct PlayerMovementActions
         {
             private @PlayerInput m_Wrapper;
@@ -169,7 +169,7 @@ namespace ProjectNadir
             public InputAction @Move => m_Wrapper.m_PlayerMovement_Move;
             public InputAction @Jump => m_Wrapper.m_PlayerMovement_Jump;
             public InputAction @Dash => m_Wrapper.m_PlayerMovement_Dash;
-            public InputAction @Melee => m_Wrapper.m_PlayerMovement_Melee;
+            public InputAction @Attack => m_Wrapper.m_PlayerMovement_Attack;
             public InputActionMap Get() { return m_Wrapper.m_PlayerMovement; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -188,9 +188,9 @@ namespace ProjectNadir
                     @Dash.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnDash;
                     @Dash.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnDash;
                     @Dash.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnDash;
-                    @Melee.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnMelee;
-                    @Melee.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnMelee;
-                    @Melee.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnMelee;
+                    @Attack.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnAttack;
+                    @Attack.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnAttack;
+                    @Attack.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnAttack;
                 }
                 m_Wrapper.m_PlayerMovementActionsCallbackInterface = instance;
                 if (instance != null)
@@ -204,9 +204,9 @@ namespace ProjectNadir
                     @Dash.started += instance.OnDash;
                     @Dash.performed += instance.OnDash;
                     @Dash.canceled += instance.OnDash;
-                    @Melee.started += instance.OnMelee;
-                    @Melee.performed += instance.OnMelee;
-                    @Melee.canceled += instance.OnMelee;
+                    @Attack.started += instance.OnAttack;
+                    @Attack.performed += instance.OnAttack;
+                    @Attack.canceled += instance.OnAttack;
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace ProjectNadir
             void OnMove(InputAction.CallbackContext context);
             void OnJump(InputAction.CallbackContext context);
             void OnDash(InputAction.CallbackContext context);
-            void OnMelee(InputAction.CallbackContext context);
+            void OnAttack(InputAction.CallbackContext context);
         }
     }
 }
