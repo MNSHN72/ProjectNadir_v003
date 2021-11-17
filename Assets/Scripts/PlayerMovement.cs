@@ -422,6 +422,10 @@ namespace ProjectNadir
 
         public override void StateManager()
         {
+            if (playerMovement.IsGrounded == false)
+            {
+                playerMovement.moveDirection.y = 0f;
+            }
             if (_currentDashTime >= playerMovement.DashTime)
             {
                 if (playerMovement.IsGrounded)
@@ -481,6 +485,7 @@ namespace ProjectNadir
 
     public class Attack001 : State
     {
+        public void ToStandard() { playerMovement.SetState(new Standard(playerMovement)); }
         public override IEnumerator Walk()
         {
             UpdateMovedirection(playerMovement.WalkSpeed);
@@ -490,7 +495,7 @@ namespace ProjectNadir
 
         public override void StateManager()
         {
-
+            playerMovement.OnAnimationEnd += ToStandard;
         }
         public override void ApplyGravity()
         {
