@@ -78,6 +78,13 @@ namespace ProjectNadir
                 playerMovement.moveDirection.y -= playerMovement.Gravity * Time.fixedDeltaTime;
             }
         }
+        protected void YepGravity(float modifier)
+        {
+            if (playerMovement.IsGrounded == false)
+            {
+                playerMovement.moveDirection.y -= playerMovement.Gravity * modifier * Time.fixedDeltaTime;
+            }
+        }
 
         #endregion
     }

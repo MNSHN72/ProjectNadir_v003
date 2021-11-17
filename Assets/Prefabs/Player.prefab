@@ -12,7 +12,7 @@ Cloth:
   m_BendingStiffness: 1
   m_UseTethers: 1
   m_UseGravity: 1
-  m_Damping: 0
+  m_Damping: 0.5
   m_ExternalAcceleration: {x: 0, y: 0, z: 0}
   m_RandomAcceleration: {x: 0, y: 0, z: 0}
   m_WorldVelocityScale: 0.5
@@ -160,7 +160,8 @@ Cloth:
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 3.4028235e+38
     collisionSphereDistance: 3.4028235e+38
-  m_CapsuleColliders: []
+  m_CapsuleColliders:
+  - {fileID: 6800065440213911675}
   m_SphereColliders: []
   m_SelfCollisionDistance: 0
   m_SelfCollisionStiffness: 0.2
@@ -182,6 +183,7 @@ GameObject:
   - component: {fileID: 3894837053535325643}
   - component: {fileID: 2194579348631619849}
   - component: {fileID: 6800065440213911675}
+  - component: {fileID: 8538420592622650046}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -234,14 +236,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82daea0cb62e9c94492bdc8245c5861c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerModel: {fileID: 1353820096050521494}
   _walkSpeed: 15
   _dashSpeed: 50
   _jumpHeight: 1
-  _doubleJumpModifier: 1.1
-  _gravity: 4
+  _doubleJumpModifier: 1
+  _gravity: 3
   _jumpTime: 0.1
   _dashTime: 0.1
-  _dashJumpSpeedModifier: 0.6
+  _dashJumpSpeedModifier: 1
+  _animator: {fileID: 0}
   inputDirection: {x: 0, y: 0}
   moveDirection: {x: 0, y: 0, z: 0}
   neutralDirection: {x: 0, y: 0, z: 0}
@@ -259,6 +263,25 @@ CapsuleCollider:
   m_Height: 1.36
   m_Direction: 1
   m_Center: {x: 0, y: 1.4, z: 0}
+--- !u!95 &8538420592622650046
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3793561828636508071}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 879e1ee9d8f033c4eaa51b313a8782b8, type: 3}
+  m_Controller: {fileID: 9100000, guid: 7d2c2af6867089b40ad33f1a57e37dcb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!183 &7764564769208768231
 Cloth:
   m_ObjectHideFlags: 0
@@ -268,10 +291,10 @@ Cloth:
   m_GameObject: {fileID: 4933396195609520909}
   m_Enabled: 1
   m_StretchingStiffness: 1
-  m_BendingStiffness: 0
+  m_BendingStiffness: 1
   m_UseTethers: 1
   m_UseGravity: 1
-  m_Damping: 0
+  m_Damping: 0.5
   m_ExternalAcceleration: {x: 0, y: 0, z: 0}
   m_RandomAcceleration: {x: 0, y: 0, z: 0}
   m_WorldVelocityScale: 0.5
@@ -633,7 +656,8 @@ Cloth:
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 0
     collisionSphereDistance: 3.4028235e+38
-  m_CapsuleColliders: []
+  m_CapsuleColliders:
+  - {fileID: 6800065440213911675}
   m_SphereColliders: []
   m_SelfCollisionDistance: 0
   m_SelfCollisionStiffness: 0.2
@@ -751,12 +775,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2875810122129727152, guid: 879e1ee9d8f033c4eaa51b313a8782b8,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 879e1ee9d8f033c4eaa51b313a8782b8,
         type: 3}
       propertyPath: m_Name
       value: 004
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5866666021909216657, guid: 879e1ee9d8f033c4eaa51b313a8782b8,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 7d2c2af6867089b40ad33f1a57e37dcb, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 879e1ee9d8f033c4eaa51b313a8782b8,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 879e1ee9d8f033c4eaa51b313a8782b8, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 879e1ee9d8f033c4eaa51b313a8782b8, type: 3}
 --- !u!4 &1226589482020915619 stripped
 Transform:

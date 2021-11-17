@@ -17,6 +17,7 @@ namespace ProjectNadir
         [SerializeField] private float _jumpTime = .1f;
         [SerializeField] private float _dashTime = .1f;
         [SerializeField] private float _dashJumpSpeedModifier = .6f;
+
         private bool _isGrounded;
         private bool _doubleJumpPossible;
         private bool _airDashPossible;
@@ -25,7 +26,7 @@ namespace ProjectNadir
         private bool _isWalking = false;
 
 
-        private Animator _animator;
+        public Animator _animator;
         private PlayerInput _playerInput;
         private CharacterController _characterController;
 
@@ -36,6 +37,12 @@ namespace ProjectNadir
 
         //private
         private Vector3 _lookDirection = Vector3.zero;
+
+
+        //event stuff
+
+        public delegate void AnimationExitHandler();
+        public event AnimationExitHandler OnAnimationEnd;
 
         #endregion
 
@@ -107,7 +114,7 @@ namespace ProjectNadir
 
         private void Start()
         {
-            _animator = GetComponentInChildren<Animator>();
+            _animator = this.GetComponent<Animator>(); 
             SetState(new Standard(this));
         }
         private void FixedUpdate()
@@ -183,6 +190,14 @@ namespace ProjectNadir
             }
         }
         #endregion
+        #region public methods
+
+        public void ExitAttack() 
+        {
+            OnAnimationEnd?.Invoke();
+        }
+
+        #endregion
     }
 
 
@@ -223,11 +238,19 @@ namespace ProjectNadir
         }
         public override IEnumerator Attack()
         {
-
+            playerMovement._animator.SetTrigger("Attack");
             playerMovement.SetState(new Attack001(playerMovement));
             yield return new WaitForEndOfFrame();
         }
 
+        public override void StateManager()
+        {
+            if (playerMovement.IsGrounded == false)
+            {
+                ApplyJumpForce(.3f);
+                playerMovement.SetState(new FreeFalling(playerMovement));
+            }
+        }
         public override void ApplyGravity()
         {
             YepGravity();
@@ -326,6 +349,56 @@ namespace ProjectNadir
 
         public Airborne(PlayerMovement playerMovement) : base(playerMovement) { }
     }
+    public class FreeFalling : State 
+    {
+        public override IEnumerator Start()
+        {
+            UpdateMovedirection(playerMovement.WalkSpeed);
+
+            yield return new WaitForFixedUpdate();
+        }
+        public override IEnumerator Walk()
+        {
+            UpdateMovedirection(playerMovement.WalkSpeed);
+
+            yield return new WaitForFixedUpdate();
+        }
+        public override IEnumerator Jump()
+        {
+            if (playerMovement.DoubleJumpPossible)
+            {
+                UpdateMovedirection(playerMovement.WalkSpeed);
+                playerMovement.SetDoubleJump(false);
+                ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DoubleJumpModifier);
+                playerMovement.SetState(new Jumping(playerMovement));
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        public override IEnumerator Dash()
+        {
+            if (playerMovement.AirDashPossible)
+            {
+                playerMovement.SetAirDash(false);
+                StartDash();
+                playerMovement.SetState(new Dashing(playerMovement));
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        public override void StateManager()
+        {
+            if (playerMovement.IsGrounded == true)
+            {
+                playerMovement.SetState(new Standard(playerMovement));
+            }
+        }
+
+        public override void ApplyGravity()
+        {
+            YepGravity();
+        }
+
+        public FreeFalling(PlayerMovement playerMovement) : base(playerMovement) { }
+    }
     public class Dashing : State
     {
         private float _currentDashTime = 0f;
@@ -408,6 +481,17 @@ namespace ProjectNadir
 
     public class Attack001 : State
     {
+        public override IEnumerator Walk()
+        {
+            UpdateMovedirection(playerMovement.WalkSpeed);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        public override void StateManager()
+        {
+
+        }
         public override void ApplyGravity()
         {
             YepGravity();

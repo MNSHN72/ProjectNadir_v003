@@ -9611,7 +9611,17 @@ PrefabInstance:
       objectReference: {fileID: 33890616}
     - target: {fileID: 2194579348631619849, guid: 2dc357dad1583004db9b8ab8bbf573ba,
         type: 3}
+      propertyPath: _gravModifier
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2194579348631619849, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
       propertyPath: _doubleJumpModifier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2194579348631619849, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: _freeFallGravModifier
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2194579348631619849, guid: 2dc357dad1583004db9b8ab8bbf573ba,
