@@ -52,7 +52,7 @@ namespace ProjectNadir
         #endregion
 
         #region Methods
-        protected void UpdateMovedirection(float Speed)
+        protected void UpdateMoveDirection(float Speed)
         {
             playerMovement.moveDirection.x = Speed * Time.fixedDeltaTime * playerMovement.inputDirection.x;
             playerMovement.moveDirection.z = Speed * Time.fixedDeltaTime * playerMovement.inputDirection.y;

@@ -39,11 +39,11 @@ namespace ProjectNadir
         private Vector3 _lookDirection = Vector3.zero;
 
 
-        //event stuff
+        #endregion
 
+        #region C# events
         public delegate void AnimationExitHandler();
         public event AnimationExitHandler OnAnimationEnd;
-
         #endregion
 
         #region get only properties
@@ -111,7 +111,6 @@ namespace ProjectNadir
 
             StopAllCoroutines();
         }
-
         private void Start()
         {
             _animator = this.GetComponent<Animator>(); 
@@ -136,8 +135,6 @@ namespace ProjectNadir
             _characterController.Move(moveDirection);
 
         }
-
-
         #endregion
 
         #region input handlers
@@ -190,13 +187,14 @@ namespace ProjectNadir
             }
         }
         #endregion
+
         #region public methods
 
-        public void ExitAttack() 
+        public void ExitAnimation() 
         {
             OnAnimationEnd?.Invoke();
         }
-
+        
         #endregion
     }
 
@@ -209,13 +207,13 @@ namespace ProjectNadir
         {
             playerMovement.SetDoubleJump(true);
             playerMovement.SetAirDash(true);
-            UpdateMovedirection(playerMovement.WalkSpeed);
+            UpdateMoveDirection(playerMovement.WalkSpeed);
 
             yield return new WaitForFixedUpdate();
         }
         public override IEnumerator Walk()
         {
-            UpdateMovedirection(playerMovement.WalkSpeed);
+            UpdateMoveDirection(playerMovement.WalkSpeed);
 
             yield return new WaitForFixedUpdate();
         }
@@ -255,7 +253,7 @@ namespace ProjectNadir
         {
             YepGravity();
         }
-
+        
         public Standard(PlayerMovement playerMovement) : base(playerMovement) { }
     }
     public class Jumping : State
@@ -269,7 +267,7 @@ namespace ProjectNadir
         }
         public override IEnumerator Walk()
         {
-            UpdateMovedirection(playerMovement.WalkSpeed);
+            UpdateMoveDirection(playerMovement.WalkSpeed);
 
             yield return new WaitForFixedUpdate();
         }
@@ -303,13 +301,13 @@ namespace ProjectNadir
     {
         public override IEnumerator Start()
         {
-            UpdateMovedirection(playerMovement.WalkSpeed);
+            UpdateMoveDirection(playerMovement.WalkSpeed);
 
             yield return new WaitForFixedUpdate();
         }
         public override IEnumerator Walk()
         {
-            UpdateMovedirection(playerMovement.WalkSpeed);
+            UpdateMoveDirection(playerMovement.WalkSpeed);
 
             yield return new WaitForFixedUpdate();
         }
@@ -317,7 +315,7 @@ namespace ProjectNadir
         {
             if (playerMovement.DoubleJumpPossible)
             {
-                UpdateMovedirection(playerMovement.WalkSpeed);
+                UpdateMoveDirection(playerMovement.WalkSpeed);
                 playerMovement.SetDoubleJump(false);
                 ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DoubleJumpModifier);
                 playerMovement.SetState(new Jumping(playerMovement));
@@ -353,13 +351,13 @@ namespace ProjectNadir
     {
         public override IEnumerator Start()
         {
-            UpdateMovedirection(playerMovement.WalkSpeed);
+            UpdateMoveDirection(playerMovement.WalkSpeed);
 
             yield return new WaitForFixedUpdate();
         }
         public override IEnumerator Walk()
         {
-            UpdateMovedirection(playerMovement.WalkSpeed);
+            UpdateMoveDirection(playerMovement.WalkSpeed);
 
             yield return new WaitForFixedUpdate();
         }
@@ -367,7 +365,7 @@ namespace ProjectNadir
         {
             if (playerMovement.DoubleJumpPossible)
             {
-                UpdateMovedirection(playerMovement.WalkSpeed);
+                UpdateMoveDirection(playerMovement.WalkSpeed);
                 playerMovement.SetDoubleJump(false);
                 ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DoubleJumpModifier);
                 playerMovement.SetState(new Jumping(playerMovement));
@@ -453,7 +451,7 @@ namespace ProjectNadir
         }
         public override IEnumerator Walk()
         {
-            UpdateMovedirection(playerMovement.DashSpeed);
+            UpdateMoveDirection(playerMovement.DashSpeed);
 
             yield return new WaitForFixedUpdate();
         }
@@ -485,17 +483,21 @@ namespace ProjectNadir
 
     public class Attack001 : State
     {
-        public void ToStandard() { playerMovement.SetState(new Standard(playerMovement)); }
-        public override IEnumerator Walk()
+
+        public void ToStandard() 
         {
-            UpdateMovedirection(playerMovement.WalkSpeed);
-
-            yield return new WaitForFixedUpdate();
+            playerMovement.SetState(new Standard(playerMovement)); 
         }
-
-        public override void StateManager()
+        public override IEnumerator Start()
         {
             playerMovement.OnAnimationEnd += ToStandard;
+            yield return new WaitForFixedUpdate();
+        }
+        public override IEnumerator Walk()
+        {
+            UpdateMoveDirection(playerMovement.WalkSpeed);
+
+            yield return new WaitForFixedUpdate();
         }
         public override void ApplyGravity()
         {
