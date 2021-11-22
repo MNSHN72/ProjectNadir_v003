@@ -61,6 +61,10 @@ namespace ProjectNadir
         {
             playerMovement.moveDirection.y = inFloat;
         }
+        protected void ApplyJumpForce(float inFloatx, float inFloaty,float inFloatz)
+        {
+            playerMovement.moveDirection = new Vector3(inFloatx, inFloaty, inFloatz).normalized;
+        }
         protected void StartDash() 
         {
             if (playerMovement.IsGrounded == false)

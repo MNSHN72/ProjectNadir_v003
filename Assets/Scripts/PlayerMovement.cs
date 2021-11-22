@@ -35,6 +35,9 @@ namespace ProjectNadir
         public Vector3 moveDirection = Vector3.zero;
         public Vector3 neutralDirection = Vector3.zero;
 
+        public Vector3 LedgeDetectionRayDirection = new Vector3(0, 0, 0);
+        public float RayLength = 1f;
+
         //private
         private Vector3 _lookDirection = Vector3.zero;
 
@@ -96,6 +99,8 @@ namespace ProjectNadir
 
 
             _playerInput.PlayerMovement.Enable();
+
+            OnAnimationEnd += () => { SetState(new Standard(this)); };
         }
         private void OnDisable()
         {
@@ -109,11 +114,12 @@ namespace ProjectNadir
 
             _playerInput.PlayerMovement.Disable();
 
+            OnAnimationEnd = null;
             StopAllCoroutines();
         }
         private void Start()
         {
-            _animator = this.GetComponent<Animator>(); 
+            _animator = this.GetComponent<Animator>();
             SetState(new Standard(this));
         }
         private void FixedUpdate()
@@ -134,12 +140,16 @@ namespace ProjectNadir
 
             _characterController.Move(moveDirection);
 
+            LedgeDetectionRayDirection = new Vector3(neutralDirection.x, -1f, neutralDirection.z).normalized;
+            Debug.DrawRay(this.gameObject.transform.position, LedgeDetectionRayDirection, Color.red);
+
         }
         #endregion
 
         #region input handlers
         private void MoveHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
+
             inputDirection = context.ReadValue<Vector2>();
 
             StartCoroutine(_currentState.Walk());
@@ -190,11 +200,11 @@ namespace ProjectNadir
 
         #region public methods
 
-        public void ExitAnimation() 
+        public void ExitAnimation()
         {
             OnAnimationEnd?.Invoke();
         }
-        
+
         #endregion
     }
 
@@ -243,17 +253,25 @@ namespace ProjectNadir
 
         public override void StateManager()
         {
-            if (playerMovement.IsGrounded == false)
+            if (playerMovement.IsGrounded &&
+                Physics.Raycast
+                (playerMovement.transform.position,
+                playerMovement.LedgeDetectionRayDirection,
+                playerMovement.RayLength) == false)
             {
-                ApplyJumpForce(.3f);
-                playerMovement.SetState(new FreeFalling(playerMovement));
+                if (playerMovement.inputDirection != Vector2.zero)
+                {
+                    ApplyJumpForce(.3f);
+                    playerMovement.SetState(new Jumping(playerMovement));
+                }
+                
             }
         }
         public override void ApplyGravity()
         {
             YepGravity();
         }
-        
+
         public Standard(PlayerMovement playerMovement) : base(playerMovement) { }
     }
     public class Jumping : State
@@ -347,56 +365,6 @@ namespace ProjectNadir
 
         public Airborne(PlayerMovement playerMovement) : base(playerMovement) { }
     }
-    public class FreeFalling : State 
-    {
-        public override IEnumerator Start()
-        {
-            UpdateMoveDirection(playerMovement.WalkSpeed);
-
-            yield return new WaitForFixedUpdate();
-        }
-        public override IEnumerator Walk()
-        {
-            UpdateMoveDirection(playerMovement.WalkSpeed);
-
-            yield return new WaitForFixedUpdate();
-        }
-        public override IEnumerator Jump()
-        {
-            if (playerMovement.DoubleJumpPossible)
-            {
-                UpdateMoveDirection(playerMovement.WalkSpeed);
-                playerMovement.SetDoubleJump(false);
-                ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DoubleJumpModifier);
-                playerMovement.SetState(new Jumping(playerMovement));
-            }
-            yield return new WaitForFixedUpdate();
-        }
-        public override IEnumerator Dash()
-        {
-            if (playerMovement.AirDashPossible)
-            {
-                playerMovement.SetAirDash(false);
-                StartDash();
-                playerMovement.SetState(new Dashing(playerMovement));
-            }
-            yield return new WaitForFixedUpdate();
-        }
-        public override void StateManager()
-        {
-            if (playerMovement.IsGrounded == true)
-            {
-                playerMovement.SetState(new Standard(playerMovement));
-            }
-        }
-
-        public override void ApplyGravity()
-        {
-            YepGravity();
-        }
-
-        public FreeFalling(PlayerMovement playerMovement) : base(playerMovement) { }
-    }
     public class Dashing : State
     {
         private float _currentDashTime = 0f;
@@ -406,7 +374,7 @@ namespace ProjectNadir
             if (playerMovement.IsGrounded)
             {
                 ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DashJumpSpeedModifier);
-                playerMovement.SetState(new DashJumping(playerMovement));
+                playerMovement.SetState(new Jumping(playerMovement));
             }
             else if (playerMovement.DoubleJumpPossible)
             {
@@ -422,7 +390,7 @@ namespace ProjectNadir
         {
             if (playerMovement.IsGrounded == false)
             {
-                playerMovement.moveDirection.y = 0f;
+                playerMovement.moveDirection.y = 0;
             }
             if (_currentDashTime >= playerMovement.DashTime)
             {
@@ -440,57 +408,11 @@ namespace ProjectNadir
 
         public Dashing(PlayerMovement playerMovement) : base(playerMovement) { }
     }
-    public class DashJumping : State
-    {
-        private float _currentJumpTime = 0f;
-        public override IEnumerator Start()
-        {
-            _currentJumpTime = 0;
-
-            yield return new WaitForFixedUpdate();
-        }
-        public override IEnumerator Walk()
-        {
-            UpdateMoveDirection(playerMovement.DashSpeed);
-
-            yield return new WaitForFixedUpdate();
-        }
-        public override IEnumerator Dash()
-        {
-            if (playerMovement.AirDashPossible)
-            {
-                playerMovement.SetAirDash(false);
-                StartDash();
-                playerMovement.SetState(new Dashing(playerMovement));
-            }
-            yield return new WaitForFixedUpdate();
-        }
-
-        public override void StateManager()
-        {
-            if (_currentJumpTime >= playerMovement.JumpTime)
-            {
-                playerMovement.SetState(new Airborne(playerMovement));
-            }
-            _currentJumpTime += Time.fixedDeltaTime;
-        }
-        public override void ApplyGravity()
-        {
-            YepGravity();
-        }
-        public DashJumping(PlayerMovement playerMovement) : base(playerMovement) { }
-    }
 
     public class Attack001 : State
     {
-
-        public void ToStandard() 
-        {
-            playerMovement.SetState(new Standard(playerMovement)); 
-        }
         public override IEnumerator Start()
         {
-            playerMovement.OnAnimationEnd += ToStandard;
             yield return new WaitForFixedUpdate();
         }
         public override IEnumerator Walk()
