@@ -35,8 +35,11 @@ namespace ProjectNadir
         public Vector3 moveDirection = Vector3.zero;
         public Vector3 neutralDirection = Vector3.zero;
 
+        public Ray LedgeDetectionRay = new Ray();
         public Vector3 LedgeDetectionRayDirection = new Vector3(0, 0, 0);
         public float RayLength = 1f;
+        public Transform LedgeDetector;
+        public float LedgeDetectionSphereRadius;
 
         //private
         private Vector3 _lookDirection = Vector3.zero;
@@ -141,8 +144,9 @@ namespace ProjectNadir
             _characterController.Move(moveDirection);
 
             LedgeDetectionRayDirection = new Vector3(neutralDirection.x, -1f, neutralDirection.z).normalized;
-            Debug.DrawRay(this.gameObject.transform.position, LedgeDetectionRayDirection, Color.red);
+            Debug.DrawRay(LedgeDetector.transform.position, LedgeDetectionRayDirection, Color.red);
 
+            LedgeDetectionRay = new Ray(LedgeDetector.transform.position, LedgeDetectionRayDirection);
         }
         #endregion
 
@@ -254,10 +258,10 @@ namespace ProjectNadir
         public override void StateManager()
         {
             if (playerMovement.IsGrounded &&
-                Physics.Raycast
-                (playerMovement.transform.position,
-                playerMovement.LedgeDetectionRayDirection,
-                playerMovement.RayLength) == false)
+                Physics.SphereCast(
+                    playerMovement.LedgeDetectionRay,
+                    playerMovement.LedgeDetectionSphereRadius,
+                    playerMovement.RayLength) == false)
             {
                 if (playerMovement.inputDirection != Vector2.zero)
                 {

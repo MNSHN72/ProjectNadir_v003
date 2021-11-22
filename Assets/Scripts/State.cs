@@ -65,7 +65,7 @@ namespace ProjectNadir
         {
             playerMovement.moveDirection = new Vector3(inFloatx, inFloaty, inFloatz).normalized;
         }
-        protected void StartDash() 
+        protected void StartDash()
         {
             if (playerMovement.IsGrounded == false)
             {
