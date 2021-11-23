@@ -31,7 +31,8 @@ namespace ProjectNadir
                 $"DoubleJumpPossible: {playerMovement.DoubleJumpPossible}\n" +
                 $"AirDashPossible: {playerMovement.AirDashPossible}\n" +
                 $"MoveDirection: {playerMovement.moveDirection}\n" +
-                $"NeutralDirection: {playerMovement.neutralDirection}\n"+
+                $"InputDirection: {playerMovement.InputDirection}\n" +
+                $"NeutralDirection: {playerMovement.NeutralDirection}\n"+
                 $"isWalking: {playerMovement.IsWalking}\n" +
                 $"Velocity: {playerMovement.Velocity}\n";
         }

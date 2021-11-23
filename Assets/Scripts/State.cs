@@ -54,8 +54,8 @@ namespace ProjectNadir
         #region Methods
         protected void UpdateMoveDirection(float Speed)
         {
-            playerMovement.moveDirection.x = Speed * Time.fixedDeltaTime * playerMovement.inputDirection.x;
-            playerMovement.moveDirection.z = Speed * Time.fixedDeltaTime * playerMovement.inputDirection.y;
+            playerMovement.moveDirection.x = Speed * Time.fixedDeltaTime * playerMovement.InputDirection.x;
+            playerMovement.moveDirection.z = Speed * Time.fixedDeltaTime * playerMovement.InputDirection.y;
         }
         protected void ApplyJumpForce(float inFloat)
         {
@@ -71,8 +71,8 @@ namespace ProjectNadir
             {
                 playerMovement.moveDirection.y = 0f;
             }
-            playerMovement.moveDirection.x = playerMovement.DashSpeed * Time.fixedDeltaTime * Vector3.Normalize(playerMovement.neutralDirection).x;
-            playerMovement.moveDirection.z = playerMovement.DashSpeed * Time.fixedDeltaTime * Vector3.Normalize(playerMovement.neutralDirection).z;
+            playerMovement.moveDirection.x = playerMovement.DashSpeed * Time.fixedDeltaTime * Vector3.Normalize(playerMovement.NeutralDirection).x;
+            playerMovement.moveDirection.z = playerMovement.DashSpeed * Time.fixedDeltaTime * Vector3.Normalize(playerMovement.NeutralDirection).z;
 
         }
         protected void YepGravity() 

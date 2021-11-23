@@ -8,41 +8,59 @@ namespace ProjectNadir
     public class PlayerMovement : StateMachine
     {
         #region poperties, fields, etc
+
+        //basic movement
         [SerializeField] private Transform _playerModel;
         [SerializeField] private float _walkSpeed = 15f;
         [SerializeField] private float _dashSpeed = 50f;
         [SerializeField] private float _jumpHeight = 1f;
-        [SerializeField] private float _doubleJumpModifier = 1.1f;
-        [SerializeField] private float _gravity = 4f;
+        [SerializeField] private float _doubleJumpModifier = 1f;
+        [SerializeField] private float _gravity = 3f;
         [SerializeField] private float _jumpTime = .1f;
         [SerializeField] private float _dashTime = .1f;
-        [SerializeField] private float _dashJumpSpeedModifier = .6f;
+        [SerializeField] private float _dashJumpSpeedModifier = 1f;
 
         private bool _isGrounded;
         private bool _doubleJumpPossible;
         private bool _airDashPossible;
+        private bool _updateLookDirection = true;
 
         //animator parameters
         private bool _isWalking = false;
 
 
-        public Animator _animator;
+        private Animator _animator;
         private PlayerInput _playerInput;
         private CharacterController _characterController;
 
-        //need to be public cuz the state class needs to access them
-        public Vector2 inputDirection = Vector2.zero;
+
+        [SerializeField]private Vector2 _inputDirection = Vector2.zero;
+        [SerializeField]private Vector3 _neutralDirection = Vector3.zero;
+
+        //needs to be public because it's being modifed by state classes
         public Vector3 moveDirection = Vector3.zero;
-        public Vector3 neutralDirection = Vector3.zero;
 
-        public Ray LedgeDetectionRay = new Ray();
-        public Vector3 LedgeDetectionRayDirection = new Vector3(0, 0, 0);
-        public float RayLength = 1f;
-        public Transform LedgeDetector;
-        public float LedgeDetectionSphereRadius;
+        //ledge detection
+        [SerializeField] private Transform _ledgeDetector;
 
-        //private
-        private Vector3 _lookDirection = Vector3.zero;
+        private Ray _ledgeDetectionRay = new Ray();
+        private Vector3 _ledgeDetectionRayDirection = new Vector3(0, 0, 0);
+        [SerializeField] private float _rayLength = 1.5f;
+        [SerializeField] private float _rayAngle = -4f;
+        [SerializeField] private float _ledgeDetectionRadius = .5f;
+
+        private Ray _dashLedgeDetectionRay = new Ray();
+        private Vector3 _dashLedgeDetectionRayDirection = new Vector3(0, 0, 0);
+
+        [SerializeField] private float _dashRayLength = 1.5f;
+        [SerializeField] private float _dashRayAngle = -4f;
+        [SerializeField] private float _dashLedgeDetectionRadius = .5f;
+
+
+
+
+
+
 
 
         #endregion
@@ -53,6 +71,8 @@ namespace ProjectNadir
         #endregion
 
         #region get only properties
+        public Vector3 NeutralDirection { get { return _neutralDirection; } }
+        public Vector2 InputDirection { get { return _inputDirection; } }
         public float WalkSpeed { get { return _walkSpeed; } }
         public float DashSpeed { get { return _dashSpeed; } }
         public float JumpHeight { get { return _jumpHeight; } }
@@ -68,6 +88,12 @@ namespace ProjectNadir
         public bool IsWalking { get { return _isWalking; } }
         public Vector3 Velocity { get { return _characterController.velocity; } }
 
+
+
+        public Vector3 LedgeDetectorP { get { return _ledgeDetector.transform.position; } }
+
+
+
         #endregion
 
         #region set methods
@@ -79,15 +105,20 @@ namespace ProjectNadir
         {
             _airDashPossible = inBool;
         }
+        public void SetLookUpdate(bool inBool) 
+        {
+            _updateLookDirection = inBool;
+        }
         #endregion
 
         #region unity event methods
         private void Awake()
         {
             _playerInput = new PlayerInput();
-            _characterController = this.gameObject.GetComponent<CharacterController>();
-        }
 
+            _characterController = this.gameObject.GetComponent<CharacterController>();
+            _animator = this.GetComponent<Animator>();
+        }
         private void OnEnable()
         {
             _playerInput.PlayerMovement.Move.started += MoveHandler;
@@ -122,40 +153,43 @@ namespace ProjectNadir
         }
         private void Start()
         {
-            _animator = this.GetComponent<Animator>();
             SetState(new Standard(this));
         }
         private void FixedUpdate()
         {
-            ProccessLookDirection();
-            _playerModel.rotation = Quaternion.LookRotation(-_lookDirection, Vector3.up);
+            ProccessNeutralDirection();
+            ProccessLedgeDetection();
 
-            _isGrounded = _characterController.isGrounded;
+            if (_updateLookDirection == true)
+            {
+                _playerModel.rotation = Quaternion.LookRotation(-1f * _neutralDirection, Vector3.up); 
+            }
+
 
             _currentState.ApplyGravity();
             _currentState.StateManager();
 
-            ProccessNeutralDirection();
-            ProccessAnimationParameters();
-
-            _animator.SetBool("IsWalking", IsWalking);
-            _animator.SetFloat("Speed", Mathf.Abs(Velocity.x));
-
             _characterController.Move(moveDirection);
 
-            LedgeDetectionRayDirection = new Vector3(neutralDirection.x, -1f, neutralDirection.z).normalized;
-            Debug.DrawRay(LedgeDetector.transform.position, LedgeDetectionRayDirection, Color.red);
+            //placeholder as af
 
-            LedgeDetectionRay = new Ray(LedgeDetector.transform.position, LedgeDetectionRayDirection);
+
+            _isGrounded = _characterController.isGrounded;
+            ProccessAnimationParameters();
+            _animator.SetBool("IsWalking", IsWalking);
+            _animator.SetFloat("Speed", Mathf.Abs(Velocity.x));
+            Debug.DrawRay(_ledgeDetector.transform.position, _ledgeDetectionRayDirection, Color.red);
+            Debug.DrawRay
+                (_ledgeDetector.transform.position, new Vector3(NeutralDirection.normalized.x, -4f, NeutralDirection.normalized.z), Color.red);
         }
+
+
         #endregion
 
         #region input handlers
         private void MoveHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-
-            inputDirection = context.ReadValue<Vector2>();
-
+            _inputDirection = context.ReadValue<Vector2>();
             StartCoroutine(_currentState.Walk());
         }
         private void JumpHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -168,17 +202,24 @@ namespace ProjectNadir
         }
         private void AttackHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
+            _animator.SetTrigger("Attack");
             StartCoroutine(_currentState.Attack());
         }
         #endregion
 
         #region private methods
+        private void ProccessLedgeDetection()
+        {
+            _ledgeDetectionRayDirection = new Vector3(_neutralDirection.normalized.x, _rayAngle, _neutralDirection.normalized.z);
+            _ledgeDetectionRay = new Ray(_ledgeDetector.transform.position, _ledgeDetectionRayDirection);
+        }
         private void ProccessNeutralDirection()
         {
-            if (inputDirection != Vector2.zero)
+            if (_inputDirection != Vector2.zero)
             {
-                neutralDirection.x = inputDirection.x;
-                neutralDirection.z = inputDirection.y;
+                _neutralDirection.x = _inputDirection.x;
+                _neutralDirection.y = 0f;
+                _neutralDirection.z = _inputDirection.y;
             }
         }
         private void ProccessAnimationParameters()
@@ -192,14 +233,6 @@ namespace ProjectNadir
                 _isWalking = false;
             }
         }
-        private void ProccessLookDirection()
-        {
-            if (inputDirection != Vector2.zero)
-            {
-                _lookDirection.x = inputDirection.x;
-                _lookDirection.z = inputDirection.y;
-            }
-        }
         #endregion
 
         #region public methods
@@ -208,7 +241,10 @@ namespace ProjectNadir
         {
             OnAnimationEnd?.Invoke();
         }
-
+        public bool LedgeDetection() 
+        {
+            return Physics.SphereCast(_ledgeDetectionRay, _ledgeDetectionRadius, _rayLength);
+        }
         #endregion
     }
 
@@ -243,32 +279,32 @@ namespace ProjectNadir
         }
         public override IEnumerator Dash()
         {
-            StartDash();
+            playerMovement.SetLookUpdate(false);
             playerMovement.SetState(new Dashing(playerMovement));
 
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
         public override IEnumerator Attack()
         {
-            playerMovement._animator.SetTrigger("Attack");
             playerMovement.SetState(new Attack001(playerMovement));
             yield return new WaitForEndOfFrame();
         }
 
         public override void StateManager()
         {
-            if (playerMovement.IsGrounded &&
-                Physics.SphereCast(
-                    playerMovement.LedgeDetectionRay,
-                    playerMovement.LedgeDetectionSphereRadius,
-                    playerMovement.RayLength) == false)
+            if (playerMovement.IsGrounded && playerMovement.LedgeDetection() == false
+                &&playerMovement.Velocity.magnitude>6.5f)
             {
-                if (playerMovement.inputDirection != Vector2.zero)
+                if (playerMovement.InputDirection != Vector2.zero)
                 {
+                    Debug.Log("ledgejump");
                     ApplyJumpForce(.3f);
-                    playerMovement.SetState(new Jumping(playerMovement));
+                    playerMovement.SetState(new Airborne(playerMovement)); 
                 }
-                
+            }
+            if (playerMovement.IsGrounded == false)
+            {
+                playerMovement.SetState(new Airborne(playerMovement));
             }
         }
         public override void ApplyGravity()
@@ -298,7 +334,7 @@ namespace ProjectNadir
             if (playerMovement.AirDashPossible)
             {
                 playerMovement.SetAirDash(false);
-                StartDash();
+                playerMovement.SetLookUpdate(false);
                 playerMovement.SetState(new Dashing(playerMovement));
             }
             yield return new WaitForFixedUpdate();
@@ -337,7 +373,6 @@ namespace ProjectNadir
         {
             if (playerMovement.DoubleJumpPossible)
             {
-                UpdateMoveDirection(playerMovement.WalkSpeed);
                 playerMovement.SetDoubleJump(false);
                 ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DoubleJumpModifier);
                 playerMovement.SetState(new Jumping(playerMovement));
@@ -348,8 +383,9 @@ namespace ProjectNadir
         {
             if (playerMovement.AirDashPossible)
             {
+                Debug.Log("airdash");
                 playerMovement.SetAirDash(false);
-                StartDash();
+                playerMovement.SetLookUpdate(false);
                 playerMovement.SetState(new Dashing(playerMovement));
             }
             yield return new WaitForFixedUpdate();
@@ -373,6 +409,11 @@ namespace ProjectNadir
     {
         private float _currentDashTime = 0f;
 
+        public override IEnumerator Start()
+        {
+            StartDash();
+            yield return new WaitForFixedUpdate();
+        }
         public override IEnumerator Jump()
         {
             if (playerMovement.IsGrounded)
@@ -392,22 +433,39 @@ namespace ProjectNadir
 
         public override void StateManager()
         {
-            if (playerMovement.IsGrounded == false)
+            //handles ledge jump
+            if (playerMovement.IsGrounded && 
+                Physics.SphereCast
+                (new Ray(playerMovement.LedgeDetectorP,new Vector3(playerMovement.NeutralDirection.normalized.x,-4f,playerMovement.NeutralDirection.normalized.z)),
+                .43f,
+                5f)== false)
             {
-                playerMovement.moveDirection.y = 0;
+                Debug.Log("Dash ledgejump");
+                ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DashJumpSpeedModifier);
+                playerMovement.SetLookUpdate(true);
+                playerMovement.SetState(new Jumping(playerMovement));
             }
+
+            //exits state when dash time is over
             if (_currentDashTime >= playerMovement.DashTime)
             {
                 if (playerMovement.IsGrounded)
                 {
+                    playerMovement.SetLookUpdate(true);
                     playerMovement.SetState(new Standard(playerMovement));
                 }
                 else if (playerMovement.IsGrounded == false)
                 {
+                    playerMovement.SetLookUpdate(true);
                     playerMovement.SetState(new Airborne(playerMovement));
                 }
             }
             _currentDashTime += Time.fixedDeltaTime;
+        }
+
+        public override void ApplyGravity()
+        {
+            YepGravity();
         }
 
         public Dashing(PlayerMovement playerMovement) : base(playerMovement) { }
