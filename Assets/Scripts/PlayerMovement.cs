@@ -54,11 +54,9 @@ namespace ProjectNadir
         private Vector3 _dashLedgeDetectionRayDirection = new Vector3(0, 0, 0);
 
         [SerializeField] private float _dashRayLength = 5f;
-        [SerializeField] private float _dashRayAngle = -4f;
+        [SerializeField] private float _dashRayAngle = -3f;
         [SerializeField] private float _dashLedgeDetectionRadius = .43f;
         [SerializeField] private RaycastHit _dashLedgeDetectionHit;
-
-
 
 
 
@@ -160,8 +158,11 @@ namespace ProjectNadir
         }
         private void FixedUpdate()
         {
+
             ProccessNeutralDirection();
             ProccessLedgeDetection();
+            LedgeDetection();
+            DashLedgeDetection();
 
             _playerModel.rotation = Quaternion.LookRotation(-1f * _neutralDirection, Vector3.up);
 
@@ -174,34 +175,54 @@ namespace ProjectNadir
 
             //placeholder as af
 
-            LedgeDetection();
-            DashLedgeDetection();
-
             _isGrounded = _characterController.isGrounded;
             ProccessAnimationParameters();
             _animator.SetBool("IsWalking", IsWalking);
             _animator.SetFloat("Speed", Mathf.Abs(Velocity.x));
         }
+
+
+        #endregion
+        #region Debug
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(LedgeDetectorP + _ledgeDetectionRayDirection * (_ledgeDetectionHit.distance / _ledgeDetectionRayDirection.magnitude)
-                , _ledgeDetectionRadius);
-            Gizmos.DrawLine
-                (LedgeDetectorP,
-                LedgeDetectorP + _ledgeDetectionRayDirection * (_ledgeDetectionHit.distance / _ledgeDetectionRayDirection.magnitude)
-                );
+            if (LedgeDetection() == true)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(EndPoint(_ledgeDetectionHit.distance), _ledgeDetectionRadius);
+                Gizmos.DrawLine(LedgeDetectorP, EndPoint(_ledgeDetectionHit.distance));
+            }
+            else
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireSphere(EndPoint(_rayLength), _ledgeDetectionRadius);
+                Gizmos.DrawLine(LedgeDetectorP, EndPoint(_rayLength));
+            }
 
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(LedgeDetectorP + _dashLedgeDetectionRayDirection * (_dashLedgeDetectionHit.distance / _dashLedgeDetectionRayDirection.magnitude)
-                , _dashLedgeDetectionRadius);
-            Gizmos.DrawLine
-                (LedgeDetectorP,
-                LedgeDetectorP + _dashLedgeDetectionRayDirection * (_dashLedgeDetectionHit.distance / _dashLedgeDetectionRayDirection.magnitude)
-                );
+            if (DashLedgeDetection() == true)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(DashEndPoint(_dashLedgeDetectionHit.distance), _dashLedgeDetectionRadius);
+                Gizmos.DrawLine(LedgeDetectorP, DashEndPoint(_dashLedgeDetectionHit.distance));
+            }
+            else
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireSphere(DashEndPoint(_dashRayLength), _dashLedgeDetectionRadius);
+                Gizmos.DrawLine(LedgeDetectorP, DashEndPoint(_dashRayLength));
+            }
+        }
+        private Vector3 EndPoint(float inDistance)
+        {
+            return LedgeDetectorP + _ledgeDetectionRayDirection * (inDistance / _ledgeDetectionRayDirection.magnitude);
+        }
+        private Vector3 DashEndPoint(float inDistance)
+        {
+            return LedgeDetectorP + _dashLedgeDetectionRayDirection * (inDistance / _dashLedgeDetectionRayDirection.magnitude);
         }
 
         #endregion
+
 
         #region input handlers
         private void MoveHandler(UnityEngine.InputSystem.InputAction.CallbackContext context)

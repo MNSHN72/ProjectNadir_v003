@@ -274,18 +274,18 @@ MonoBehaviour:
   _doubleJumpModifier: 1
   _gravity: 3
   _jumpTime: 0.1
-  _dashTime: 0.1
+  _dashTime: 0.15
   _dashJumpSpeedModifier: 1
   _inputDirection: {x: 0, y: 0}
   _neutralDirection: {x: 0, y: 0, z: 0}
   moveDirection: {x: 0, y: 0, z: 0}
   _ledgeDetector: {fileID: 978881611109840521}
-  _rayLength: 2.8
-  _rayAngle: -30
-  _ledgeDetectionRadius: 0.5
-  _dashRayLength: 1.5
-  _dashRayAngle: -4
-  _dashLedgeDetectionRadius: 0.5
+  _rayLength: 3
+  _rayAngle: -8
+  _ledgeDetectionRadius: 0.43
+  _dashRayLength: 5
+  _dashRayAngle: -3
+  _dashLedgeDetectionRadius: 0.43
 --- !u!136 &6800065440213911675
 CapsuleCollider:
   m_ObjectHideFlags: 0

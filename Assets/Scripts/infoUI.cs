@@ -28,6 +28,8 @@ namespace ProjectNadir
             _textToPrint =
                 $"CurrentState: {playerMovement.CurrentState}\n" +
                 $"IsGrounded: {playerMovement.IsGrounded}\n" +
+                $"LedgeDetection: {playerMovement.LedgeDetection()}\n" +
+                $"DashLedgeDetection: {playerMovement.DashLedgeDetection()}\n" +
                 $"DoubleJumpPossible: {playerMovement.DoubleJumpPossible}\n" +
                 $"AirDashPossible: {playerMovement.AirDashPossible}\n" +
                 $"MoveDirection: {playerMovement.moveDirection}\n" +
