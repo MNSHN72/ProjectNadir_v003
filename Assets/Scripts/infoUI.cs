@@ -30,10 +30,10 @@ namespace ProjectNadir
                 $"IsGrounded: {playerMovement.IsGrounded}\n" +
                 $"DoubleJumpPossible: {playerMovement.DoubleJumpPossible}\n" +
                 $"AirDashPossible: {playerMovement.AirDashPossible}\n" +
-                $"UpdateLookDirection: {playerMovement.UpdateLookDirection}\n" +
                 $"MoveDirection: {playerMovement.moveDirection}\n" +
                 $"InputDirection: {playerMovement.InputDirection}\n" +
-                $"NeutralDirection: {playerMovement.NeutralDirection}\n"+
+                $"NeutralDirection: {playerMovement.NeutralDirection}\n" +
+                $"UpdateNeutralDirection: {playerMovement.UpdateNeutralDirection}\n" +
                 $"isWalking: {playerMovement.IsWalking}\n" +
                 $"Velocity: {playerMovement.Velocity}\n";
         }

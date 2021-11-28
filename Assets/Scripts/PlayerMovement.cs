@@ -23,7 +23,7 @@ namespace ProjectNadir
         private bool _isGrounded;
         private bool _doubleJumpPossible;
         private bool _airDashPossible;
-        private bool _updateLookDirection = true;
+        private bool _updateNeutralDirection = true;
 
         //animator parameters
         private bool _isWalking = false;
@@ -34,8 +34,8 @@ namespace ProjectNadir
         private CharacterController _characterController;
 
 
-        [SerializeField]private Vector2 _inputDirection = Vector2.zero;
-        [SerializeField]private Vector3 _neutralDirection = Vector3.zero;
+        [SerializeField] private Vector2 _inputDirection = Vector2.zero;
+        [SerializeField] private Vector3 _neutralDirection = Vector3.zero;
 
         //needs to be public because it's being modifed by state classes
         public Vector3 moveDirection = Vector3.zero;
@@ -45,16 +45,18 @@ namespace ProjectNadir
 
         private Ray _ledgeDetectionRay = new Ray();
         private Vector3 _ledgeDetectionRayDirection = new Vector3(0, 0, 0);
-        [SerializeField] private float _rayLength = 1.5f;
-        [SerializeField] private float _rayAngle = -4f;
-        [SerializeField] private float _ledgeDetectionRadius = .5f;
+        [SerializeField] private float _rayLength = 3f;
+        [SerializeField] private float _rayAngle = -8f;
+        [SerializeField] private float _ledgeDetectionRadius = .43f;
+        [SerializeField] private RaycastHit _ledgeDetectionHit;
 
         private Ray _dashLedgeDetectionRay = new Ray();
         private Vector3 _dashLedgeDetectionRayDirection = new Vector3(0, 0, 0);
 
-        [SerializeField] private float _dashRayLength = 1.5f;
+        [SerializeField] private float _dashRayLength = 5f;
         [SerializeField] private float _dashRayAngle = -4f;
-        [SerializeField] private float _dashLedgeDetectionRadius = .5f;
+        [SerializeField] private float _dashLedgeDetectionRadius = .43f;
+        [SerializeField] private RaycastHit _dashLedgeDetectionHit;
 
 
 
@@ -86,7 +88,7 @@ namespace ProjectNadir
         public bool DoubleJumpPossible { get { return _doubleJumpPossible; } }
         public bool AirDashPossible { get { return _airDashPossible; } }
         public bool IsWalking { get { return _isWalking; } }
-        public bool UpdateLookDirection { get { return _updateLookDirection; } }
+        public bool UpdateNeutralDirection { get { return _updateNeutralDirection; } }
         public Vector3 Velocity { get { return _characterController.velocity; } }
 
 
@@ -106,9 +108,9 @@ namespace ProjectNadir
         {
             _airDashPossible = inBool;
         }
-        public void SetLookUpdate(bool inBool) 
+        public void SetNeutralDirectionUpdate(bool inBool)
         {
-            _updateLookDirection = inBool;
+            _updateNeutralDirection = inBool;
         }
         #endregion
 
@@ -161,10 +163,8 @@ namespace ProjectNadir
             ProccessNeutralDirection();
             ProccessLedgeDetection();
 
-            if (_updateLookDirection == true)
-            {
-                _playerModel.rotation = Quaternion.LookRotation(-1f * _neutralDirection, Vector3.up); 
-            }
+            _playerModel.rotation = Quaternion.LookRotation(-1f * _neutralDirection, Vector3.up);
+
 
 
             _currentState.ApplyGravity();
@@ -174,16 +174,32 @@ namespace ProjectNadir
 
             //placeholder as af
 
+            LedgeDetection();
+            DashLedgeDetection();
 
             _isGrounded = _characterController.isGrounded;
             ProccessAnimationParameters();
             _animator.SetBool("IsWalking", IsWalking);
             _animator.SetFloat("Speed", Mathf.Abs(Velocity.x));
-            Debug.DrawRay(_ledgeDetector.transform.position, _ledgeDetectionRayDirection, Color.red);
-            Debug.DrawRay
-                (_ledgeDetector.transform.position, new Vector3(NeutralDirection.normalized.x, -4f, NeutralDirection.normalized.z), Color.red);
         }
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(LedgeDetectorP + _ledgeDetectionRayDirection * (_ledgeDetectionHit.distance / _ledgeDetectionRayDirection.magnitude)
+                , _ledgeDetectionRadius);
+            Gizmos.DrawLine
+                (LedgeDetectorP,
+                LedgeDetectorP + _ledgeDetectionRayDirection * (_ledgeDetectionHit.distance / _ledgeDetectionRayDirection.magnitude)
+                );
 
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(LedgeDetectorP + _dashLedgeDetectionRayDirection * (_dashLedgeDetectionHit.distance / _dashLedgeDetectionRayDirection.magnitude)
+                , _dashLedgeDetectionRadius);
+            Gizmos.DrawLine
+                (LedgeDetectorP,
+                LedgeDetectorP + _dashLedgeDetectionRayDirection * (_dashLedgeDetectionHit.distance / _dashLedgeDetectionRayDirection.magnitude)
+                );
+        }
 
         #endregion
 
@@ -213,10 +229,13 @@ namespace ProjectNadir
         {
             _ledgeDetectionRayDirection = new Vector3(_neutralDirection.normalized.x, _rayAngle, _neutralDirection.normalized.z);
             _ledgeDetectionRay = new Ray(_ledgeDetector.transform.position, _ledgeDetectionRayDirection);
+
+            _dashLedgeDetectionRayDirection = new Vector3(_neutralDirection.normalized.x, _dashRayAngle, _neutralDirection.normalized.z);
+            _dashLedgeDetectionRay = new Ray(_ledgeDetector.transform.position, _dashLedgeDetectionRayDirection);
         }
         private void ProccessNeutralDirection()
         {
-            if (_inputDirection != Vector2.zero)
+            if (_inputDirection != Vector2.zero && UpdateNeutralDirection == true)
             {
                 _neutralDirection.x = _inputDirection.x;
                 _neutralDirection.y = 0f;
@@ -242,10 +261,15 @@ namespace ProjectNadir
         {
             OnAnimationEnd?.Invoke();
         }
-        public bool LedgeDetection() 
+        public bool LedgeDetection()
         {
-            return Physics.SphereCast(_ledgeDetectionRay, _ledgeDetectionRadius, _rayLength);
+            return Physics.SphereCast(_ledgeDetectionRay, _ledgeDetectionRadius, out _ledgeDetectionHit, _rayLength);
         }
+        public bool DashLedgeDetection()
+        {
+            return Physics.SphereCast(_dashLedgeDetectionRay, _dashLedgeDetectionRadius, out _dashLedgeDetectionHit, _dashRayLength);
+        }
+
         #endregion
     }
 
@@ -280,7 +304,7 @@ namespace ProjectNadir
         }
         public override IEnumerator Dash()
         {
-            playerMovement.SetLookUpdate(false);
+            playerMovement.SetNeutralDirectionUpdate(false);
             playerMovement.SetState(new Dashing(playerMovement));
 
             yield return new WaitForFixedUpdate();
@@ -335,7 +359,7 @@ namespace ProjectNadir
             if (playerMovement.AirDashPossible)
             {
                 playerMovement.SetAirDash(false);
-                playerMovement.SetLookUpdate(false);
+                playerMovement.SetNeutralDirectionUpdate(false);
                 playerMovement.SetState(new Dashing(playerMovement));
             }
             yield return new WaitForFixedUpdate();
@@ -386,7 +410,7 @@ namespace ProjectNadir
             {
                 Debug.Log("airdash");
                 playerMovement.SetAirDash(false);
-                playerMovement.SetLookUpdate(false);
+                playerMovement.SetNeutralDirectionUpdate(false);
                 playerMovement.SetState(new Dashing(playerMovement));
             }
             yield return new WaitForFixedUpdate();
@@ -420,14 +444,14 @@ namespace ProjectNadir
             if (playerMovement.IsGrounded)
             {
                 ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DashJumpSpeedModifier);
-                playerMovement.SetLookUpdate(true);
+                playerMovement.SetNeutralDirectionUpdate(true);
                 playerMovement.SetState(new Jumping(playerMovement));
             }
             else if (playerMovement.DoubleJumpPossible)
             {
                 playerMovement.SetDoubleJump(false);
                 ApplyJumpForce(playerMovement.JumpHeight);
-                playerMovement.SetLookUpdate(true);
+                playerMovement.SetNeutralDirectionUpdate(true);
                 playerMovement.SetState(new Jumping(playerMovement));
             }
 
@@ -437,15 +461,11 @@ namespace ProjectNadir
         public override void StateManager()
         {
             //handles ledge jump
-            if (playerMovement.IsGrounded && 
-                Physics.SphereCast
-                (new Ray(playerMovement.LedgeDetectorP,new Vector3(playerMovement.NeutralDirection.normalized.x,-4f,playerMovement.NeutralDirection.normalized.z)),
-                .43f,
-                5f)== false)
+            if (playerMovement.IsGrounded && playerMovement.DashLedgeDetection() == false)
             {
                 Debug.Log("Dash ledgejump");
                 ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DashJumpSpeedModifier);
-                playerMovement.SetLookUpdate(true);
+                playerMovement.SetNeutralDirectionUpdate(true);
                 playerMovement.SetState(new Jumping(playerMovement));
             }
 
@@ -454,12 +474,12 @@ namespace ProjectNadir
             {
                 if (playerMovement.IsGrounded)
                 {
-                    playerMovement.SetLookUpdate(true);
+                    playerMovement.SetNeutralDirectionUpdate(true);
                     playerMovement.SetState(new Standard(playerMovement));
                 }
                 else if (playerMovement.IsGrounded == false)
                 {
-                    playerMovement.SetLookUpdate(true);
+                    playerMovement.SetNeutralDirectionUpdate(true);
                     playerMovement.SetState(new Airborne(playerMovement));
                 }
             }
