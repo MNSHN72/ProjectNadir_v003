@@ -86,6 +86,7 @@ namespace ProjectNadir
         public bool DoubleJumpPossible { get { return _doubleJumpPossible; } }
         public bool AirDashPossible { get { return _airDashPossible; } }
         public bool IsWalking { get { return _isWalking; } }
+        public bool UpdateLookDirection { get { return _updateLookDirection; } }
         public Vector3 Velocity { get { return _characterController.velocity; } }
 
 
@@ -419,12 +420,14 @@ namespace ProjectNadir
             if (playerMovement.IsGrounded)
             {
                 ApplyJumpForce(playerMovement.JumpHeight * playerMovement.DashJumpSpeedModifier);
+                playerMovement.SetLookUpdate(true);
                 playerMovement.SetState(new Jumping(playerMovement));
             }
             else if (playerMovement.DoubleJumpPossible)
             {
                 playerMovement.SetDoubleJump(false);
                 ApplyJumpForce(playerMovement.JumpHeight);
+                playerMovement.SetLookUpdate(true);
                 playerMovement.SetState(new Jumping(playerMovement));
             }
 
@@ -465,7 +468,10 @@ namespace ProjectNadir
 
         public override void ApplyGravity()
         {
-            YepGravity();
+            if (playerMovement.IsGrounded == true)
+            {
+                YepGravity();
+            }
         }
 
         public Dashing(PlayerMovement playerMovement) : base(playerMovement) { }
