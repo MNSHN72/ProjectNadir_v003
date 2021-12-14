@@ -914,7 +914,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ecclesia_v7
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 73c45b2c610774a4cbd1b2cffa7044eb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 73c45b2c610774a4cbd1b2cffa7044eb, type: 3}
 --- !u!4 &2835177839466511073 stripped
 Transform:
