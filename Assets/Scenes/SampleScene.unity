@@ -326,7 +326,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh76570
+  m_Name: pb_Mesh15906
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -9308,7 +9308,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.3366065, y: 0.00000001620231, z: -0.0000000057917786, w: 0.94164544}
+  m_LocalRotation: {x: 0.3366065, y: -0.000000016202312, z: 0.0000000057917795, w: 0.94164544}
   m_LocalPosition: {x: -32, y: 21, z: 37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -9475,7 +9475,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1164688233}
-  m_LocalRotation: {x: 0.3366065, y: 0.00000001620231, z: -0.0000000057917786, w: 0.94164544}
+  m_LocalRotation: {x: 0.3366065, y: -0.000000016202312, z: 0.0000000057917795, w: 0.94164544}
   m_LocalPosition: {x: -32, y: 21, z: 37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -9760,6 +9760,81 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].Gravity.y
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[1].Gravity.y
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].PoseStiffnessCurveType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[1].PoseStiffnessCurveType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[1].AnimationBlendCurveType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].CollisionRadiusCurveType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[1].CollisionRadiusCurveType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].PoseStiffnessCustomCurve.m_Curve.Array.data[1].time
+      value: 0.9998169
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].PoseStiffnessCustomCurve.m_Curve.Array.data[1].value
+      value: 0.95118713
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].PoseStiffnessCustomCurve.m_Curve.Array.data[0].inSlope
+      value: -0.0013157164
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].PoseStiffnessCustomCurve.m_Curve.Array.data[1].inSlope
+      value: -0.16231292
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].PoseStiffnessCustomCurve.m_Curve.Array.data[0].outSlope
+      value: -0.0013157164
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].PoseStiffnessCustomCurve.m_Curve.Array.data[1].inWeight
+      value: 0.07406065
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].PoseStiffnessCustomCurve.m_Curve.Array.data[1].outSlope
+      value: -0.16231292
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094796936089592763, guid: 2dc357dad1583004db9b8ab8bbf573ba,
+        type: 3}
+      propertyPath: BoneChains.Array.data[0].PoseStiffnessCustomCurve.m_Curve.Array.data[0].outWeight
+      value: 0.5458333
       objectReference: {fileID: 0}
     - target: {fileID: 5193381269204301522, guid: 2dc357dad1583004db9b8ab8bbf573ba,
         type: 3}
